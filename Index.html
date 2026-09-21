@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Tu Ramo de Flores Amarillas 🌻💛</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1e0f2d 0%, #05010a 100%);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* PANTALLA DE INICIO */
+    #start-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5, 1, 10, 0.95);
+      z-index: 50;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      color: #ffd700;
+      text-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+      margin-bottom: 25px;
+    }
+
+    .btn-build {
+      background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+      border: none;
+      color: #1a0826;
+      padding: 18px 36px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+    }
+
+    .btn-build:active {
+      transform: scale(0.95);
+    }
+
+    /* CONTENEDOR DEL RAMO */
+    #bouquet-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    svg {
+      width: 98vw;
+      height: 95vh;
+      max-width: 850px;
+      max-height: 1000px;
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
+    }
+
+    /* TARJETA DE MENSAJE */
+    #final-card {
+      position: absolute;
+      bottom: 25px;
+      background: rgba(20, 10, 30, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      padding: 16px 22px;
+      border-radius: 20px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      z-index: 20;
+      width: 90%;
+      max-width: 450px;
+    }
+
+    #final-card.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #final-card h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: #ffd700;
+      margin-bottom: 6px;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+    }
+
+    #final-card p {
+      font-size: 0.95rem;
+      color: #f0e6ff;
+      line-height: 1.4;
+    }
+
+    .hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* ANIMACIONES DEL RAMO Y EMOJIS */
+    .stem, .leaf, .wrapper-part, .flower-group {
+      opacity: 0;
+      transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .emoji-particle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 1.6rem;
+      animation: floatEmoji 2.8s ease-out forwards;
+      z-index: 30;
+    }
+
+    @keyframes floatEmoji {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.4) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-90px) scale(1.3) rotate(30deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUDIO ORIGINAL DE FLORENCIA BERTOTTI (FLORICIENTA) -->
+  <audio id="bg-music" src="https://ia801503.us.archive.org/15/items/floricienta-flores-amarillas/Floricienta%20-%20Flores%20Amarillas.mp3" preload="auto" loop></audio>
+
+  <!-- PANTALLA INICIAL -->
+  <div id="start-screen">
+    <h1 class="title">¡Tengo algo para ti! ✨</h1>
+    <button class="btn-build" id="btn-start">Abrir ramo de flores amarillas 🌻</button>
+  </div>
+
+  <!-- RAMO REALISTA TIPO 💐 -->
+  <div id="bouquet-container">
+    <svg viewBox="0 0 600 850">
+      <defs>
+        <!-- Gradients Realistas -->
+        <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#558b2f"/>
+          <stop offset="50%" stop-color="#33691e"/>
+          <stop offset="100%" stop-color="#1b5e20"/>
+        </linearGradient>
+
+        <linearGradient id="paperOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f5e6ca"/>
+          <stop offset="50%" stop-color="#e2c99b"/>
+          <stop offset="100%" stop-color="#bf9b68"/>
+        </linearGradient>
+
+        <linearGradient id="paperInner" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#e8d8bd"/>
+        </linearGradient>
+
+        <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ff1744"/>
+          <stop offset="50%" stop-color="#d50000"/>
+          <stop offset="100%" stop-color="#8e0000"/>
+        </linearGradient>
+
+        <radialGradient id="sunCenter" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#5d4037"/>
+          <stop offset="70%" stop-color="#3e2723"/>
+          <stop offset="100%" stop-color="#1b0000"/>
+        </radialGradient>
+
+        <!-- DEFINICIÓN DE FLOR / GIRASOL REALISTA -->
+        <g id="sunflower-detailed">
+          <circle cx="0" cy="0" r="54" fill="rgba(0,0,0,0.15)"/>
+          
+          <!-- Capa 1: Pétalos oscuros / fondo -->
+          <g fill="#f57f17">
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(20)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(40)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(80)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(100)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(140)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(160)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(200)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(220)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(260)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(280)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(300)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(320)"/>
+            <ellipse cx="0" cy="-52" rx="11" ry="32" transform="rotate(340)"/>
+          </g>
+
+          <!-- Capa 2: Pétalos amarillos vibrantes -->
+          <g fill="#ffeb3b">
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(10)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(30)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(50)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(70)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(90)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(110)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(130)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(150)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(170)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(190)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(210)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(230)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(250)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(270)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(290)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(310)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(330)"/>
+            <ellipse cx="0" cy="-48" rx="10" ry="29" transform="rotate(350)"/>
+          </g>
+
+          <!-- Capa 3: Pétalos frontales dorados -->
+          <g fill="#ffd700">
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(5)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(45)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(85)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(125)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(165)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(205)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(245)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(285)"/>
+            <ellipse cx="0" cy="-44" rx="8" ry="25" transform="rotate(325)"/>
+          </g>
+
+          <!-- Centro Texturizado -->
+          <circle cx="0" cy="0" r="26" fill="url(#sunCenter)"/>
+          <circle cx="0" cy="0" r="21" fill="none" stroke="#795548" stroke-width="2" stroke-dasharray="4 2"/>
+          <circle cx="0" cy="0" r="14" fill="none" stroke="#8d6e63" stroke-width="2" stroke-dasharray="3 2"/>
+          <circle cx="0" cy="0" r="7" fill="#2d1500"/>
+        </g>
+      </defs>
+
+      <!-- TALLOS -->
+      <g id="stems">
+        <path class="stem" d="M 270 650 L 260 810" stroke="url(#stemGrad)" stroke-width="10" stroke-linecap="round"/>
+        <path class="stem" d="M 285 650 L 280 820" stroke="url(#stemGrad)" stroke-width="12" stroke-linecap="round"/>
+        <path class="stem" d="M 300 650 L 300 825" stroke="url(#stemGrad)" stroke-width="11" stroke-linecap="round"/>
+        <path class="stem" d="M 315 650 L 320 820" stroke="url(#stemGrad)" stroke-width="12" stroke-linecap="round"/>
+        <path class="stem" d="M 330 650 L 340 810" stroke="url(#stemGrad)" stroke-width="10" stroke-linecap="round"/>
+      </g>
+
+      <!-- PAPEL TRASERO -->
+      <g id="wrapper-back">
+        <polygon class="wrapper-part" points="300,660 50,220 180,120 300,280" fill="url(#paperInner)" opacity="0.9"/>
+        <polygon class="wrapper-part" points="300,660 550,220 420,120 300,280" fill="url(#paperInner)" opacity="0.9"/>
+        <polygon class="wrapper-part" points="300,670 20,280 120,160 300,320" fill="url(#paperOuter)"/>
+        <polygon class="wrapper-part" points="300,670 580,280 480,160 300,320" fill="url(#paperOuter)"/>
+      </g>
+
+      <!-- HOJAS -->
+      <g id="leaves">
+        <path class="leaf" d="M 160 280 Q 90 230 110 170 Q 170 210 190 260 Z" fill="#33691e"/>
+        <path class="leaf" d="M 440 280 Q 510 230 490 170 Q 430 210 410 260 Z" fill="#33691e"/>
+        <path class="leaf" d="M 220 180 Q 200 100 260 80 Q 270 140 240 190 Z" fill="#558b2f"/>
+        <path class="leaf" d="M 380 180 Q 400 100 340 80 Q 330 140 360 190 Z" fill="#558b2f"/>
+      </g>
+
+      <!-- FLORES AMARILLAS -->
+      <g id="flowers">
+        <g class="flower-group" style="transform: translate(160px, 260px) scale(0.85);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(440px, 260px) scale(0.85);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(220px, 180px) scale(0.9);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(380px, 180px) scale(0.9);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(300px, 140px) scale(0.95);"><use href="#sunflower-detailed"/></g>
+
+        <g class="flower-group" style="transform: translate(130px, 350px) scale(0.9);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(470px, 350px) scale(0.9);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(210px, 290px) scale(1.05);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(390px, 290px) scale(1.05);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(300px, 240px) scale(1.15);"><use href="#sunflower-detailed"/></g>
+
+        <g class="flower-group" style="transform: translate(200px, 400px) scale(1.0);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(400px, 400px) scale(1.0);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(300px, 360px) scale(1.25);"><use href="#sunflower-detailed"/></g>
+        <g class="flower-group" style="transform: translate(300px, 470px) scale(1.1);"><use href="#sunflower-detailed"/></g>
+      </g>
+
+      <!-- PAPEL FRONTAL Y LAZO -->
+      <g id="wrapper-front">
+        <polygon class="wrapper-part" points="300,680 80,420 300,520" fill="url(#paperOuter)"/>
+        <polygon class="wrapper-part" points="300,680 520,420 300,520" fill="url(#paperOuter)"/>
+        <polygon class="wrapper-part" points="300,680 130,460 300,550" fill="url(#paperInner)" opacity="0.6"/>
+        <polygon class="wrapper-part" points="300,680 470,460 300,550" fill="url(#paperInner)" opacity="0.6"/>
+
+        <g class="wrapper-part">
+          <path d="M 290 610 Q 250 670 210 730 Q 240 735 275 660 Z" fill="url(#ribbonGrad)"/>
+          <path d="M 310 610 Q 350 670 390 730 Q 360 735 325 660 Z" fill="url(#ribbonGrad)"/>
+          <path d="M 300 610 Q 210 560 230 620 Q 270 630 300 610 Z" fill="url(#ribbonGrad)"/>
+          <path d="M 300 610 Q 390 560 370 620 Q 330 630 300 610 Z" fill="url(#ribbonGrad)"/>
+          <rect x="288" y="598" width="24" height="22" rx="6" fill="#b71c1c" stroke="#ff5252" stroke-width="1"/>
+        </g>
+      </g>
+    </svg>
+
+    <!-- MENSAJE FINAL -->
+    <div id="final-card">
+      <h2>¡Feliz Día de las Flores Amarillas! 🌻💛</h2>
+      <p>Gracias por ser una gran y única mejor amiga, se te quiere mucho y por eso hoy te regalo este ramo de flores amarillas, para alegrar tu día. ✨</p>
+    </div>
+  </div>
+
+  <script>
+    const btnStart = document.getElementById('btn-start');
+    const startScreen = document.getElementById('start-screen');
+    const stems = document.querySelectorAll('.stem');
+    const wrapperParts = document.querySelectorAll('.wrapper-part');
+    const leaves = document.querySelectorAll('.leaf');
+    const flowers = document.querySelectorAll('.flower-group');
+    const finalCard = document.getElementById('final-card');
+    const bgMusic = document.getElementById('bg-music');
+
+    const originalTransforms = [];
+    flowers.forEach((flower) => {
+      const el = flower;
+      originalTransforms.push(el.style.transform);
+      el.style.transform += ' scale(0)';
+      el.style.opacity = '0';
+    });
+
+    btnStart.addEventListener('click', () => {
+      // INICIO EXACTO EN EL CORO: "Ella sabía que él sabía..." (segundo 52)
+      bgMusic.currentTime = 52;
+      bgMusic.play().catch((err) => console.log("Playback iniciado:", err));
+
+      startScreen.classList.add('hidden');
+      buildBouquet();
+    });
+
+    function buildBouquet() {
+      stems.forEach((stem, index) => {
+        setTimeout(() => {
+          const el = stem;
+          el.style.opacity = '1';
+        }, index * 80);
+      });
+
+      setTimeout(() => {
+        wrapperParts.forEach((part) => {
+          const el = part;
+          el.style.opacity = '1';
+        });
+        leaves.forEach((leaf) => {
+          const el = leaf;
+          el.style.opacity = '1';
+        });
+      }, 400);
+
+      const startFlowerDelay = 800;
+      flowers.forEach((flower, index) => {
+        setTimeout(() => {
+          const el = flower;
+          el.style.opacity = '1';
+          el.style.transform = originalTransforms[index];
+          createEmojiSparksAround(el);
+        }, startFlowerDelay + (index * 130));
+      });
+
+      const totalTime = startFlowerDelay + (flowers.length * 130) + 300;
+      setTimeout(() => {
+        finalCard.classList.add('show');
+        startContinuousEmojiSparks();
+      }, totalTime);
+    }
+
+    function createEmojiSparksAround(element) {
+      const rect = element.getBoundingClientRect();
+      const emojis = ['✨', '🌻', '💛', '✨'];
+      
+      for (let i = 0; i < 4; i++) {
+        const span = document.createElement('span');
+        span.className = 'emoji-particle';
+        span.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        const x = rect.left + rect.width / 2 + (Math.random() - 0.5) * 100;
+        const y = rect.top + rect.height / 2 + (Math.random() - 0.5) * 100;
+
+        span.style.left = `${x}px`;
+        span.style.top = `${y}px`;
+
+        document.body.appendChild(span);
+
+        setTimeout(() => span.remove(), 2800);
+      }
+    }
+
+    function startContinuousEmojiSparks() {
+      const emojis = ['✨', '🌻', '💛', '✨'];
+      setInterval(() => {
+        const span = document.createElement('span');
+        span.className = 'emoji-particle';
+        span.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        
+        span.style.left = `${Math.random() * (window.innerWidth - 30)}px`;
+        span.style.top = `${Math.random() * (window.innerHeight * 0.75)}px`;
+
+        document.body.appendChild(span);
+
+        setTimeout(() => span.remove(), 2800);
+      }, 300);
+    }
+  </script>
+</body>
+</html>
